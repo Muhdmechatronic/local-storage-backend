@@ -1,0 +1,5 @@
+local-storage-backend/.env
+local-storage-backend/minio-data/
+*.log
+bin/
+minio-src/

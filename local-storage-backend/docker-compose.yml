@@ -1,0 +1,47 @@
+services:
+  minio:
+    image: quay.io/minio/minio:latest
+    container_name: minio-server
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_SERVER_URL: ${MINIO_SERVER_URL}
+    volumes:
+      - ./minio-data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - storage-net
+
+  minio-init:
+    build:
+      context: ./init
+      dockerfile: Dockerfile
+    image: local/minio-init:latest
+    container_name: minio-init
+    restart: on-failure:5
+    depends_on:
+      - minio
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_DEFAULT_BUCKET: ${MINIO_DEFAULT_BUCKET:-app-images}
+    networks:
+      - storage-net
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: minio-tunnel
+    restart: unless-stopped
+    depends_on:
+      - minio
+    command: tunnel --no-autoupdate --url http://minio:9000
+    networks:
+      - storage-net
+
+networks:
+  storage-net:
+    driver: bridge
