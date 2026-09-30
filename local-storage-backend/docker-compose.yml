@@ -1,6 +1,9 @@
 services:
   minio:
-    image: quay.io/minio/minio:latest
+    build:
+      context: ./minio
+      dockerfile: Dockerfile
+    image: local/minio:latest
     container_name: minio-server
     restart: unless-stopped
     ports:

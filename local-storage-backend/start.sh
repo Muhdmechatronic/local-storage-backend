@@ -28,7 +28,7 @@ docker compose up -d --build
 # 3. Wait for tunnel connection
 echo "[*] Waiting for tunnel connection and bucket auto-initialization..."
 TUNNEL_URL=""
-for i in {1..15}; do
+for i in {1..20}; do
     sleep 2
     LOGS=$(docker logs minio-tunnel 2>&1 || true)
     if echo "$LOGS" | grep -E -q 'https://[a-zA-Z0-9-]+\.trycloudflare\.com'; then
@@ -60,5 +60,8 @@ echo " [Public S3 API] : $TUNNEL_URL"
 echo " [Root User]     : $USER_NAME"
 echo " [Root Password] : $USER_PASS"
 echo " [Default Bucket]: app-images (Public Download Active)"
+echo "========================================================"
+echo " [INFO] Containers are running in background."
+echo " To stop anytime, run: ./stop.sh or docker compose down"
 echo "========================================================"
 echo ""

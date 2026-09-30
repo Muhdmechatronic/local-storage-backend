@@ -33,7 +33,7 @@ docker compose up -d --build
 Write-Host "[*] Waiting for tunnel connection and bucket auto-initialization..." -ForegroundColor Yellow
 
 $tunnelUrl = ""
-for ($i = 0; $i -lt 15; $i++) {
+for ($i = 0; $i -lt 20; $i++) {
     Start-Sleep -Seconds 2
     $logs = [string](cmd /c "docker logs minio-tunnel 2>&1")
     if ($logs -match 'https://[a-zA-Z0-9-]+\.trycloudflare\.com') {
@@ -70,4 +70,14 @@ Write-Host " [Public S3 API] : $tunnelUrl" -ForegroundColor Cyan
 Write-Host " [Root User]     : $user" -ForegroundColor White
 Write-Host " [Root Password] : $pass" -ForegroundColor White
 Write-Host " [Default Bucket]: app-images (Public Download Active)" -ForegroundColor White
+Write-Host "========================================================" -ForegroundColor Green
+Write-Host " [INFO] Containers are running in background." -ForegroundColor Yellow
+Write-Host " To stop anytime, run: .\stop.ps1 or double-click stop.bat" -ForegroundColor Gray
 Write-Host "========================================================`n" -ForegroundColor Green
+
+# Optional: Prompt to follow logs or exit
+$choice = Read-Host "Press [L] to stream live logs, or press [Enter] to exit launcher"
+if ($choice -eq 'L' -or $choice -eq 'l') {
+    Write-Host "`nStreaming live logs (Press Ctrl+C to stop viewing)...`n" -ForegroundColor Cyan
+    docker compose logs -f
+}
