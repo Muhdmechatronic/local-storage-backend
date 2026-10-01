@@ -51,7 +51,7 @@ services:
       - "-c"
       - |
         if [ -n "$$NGROK_DOMAIN" ]; then
-          exec ngrok http --domain="$$NGROK_DOMAIN" minio:9000
+          exec ngrok http --url="https://$$NGROK_DOMAIN" minio:9000
         else
           exec ngrok http minio:9000
         fi
