@@ -36,12 +36,25 @@ services:
       - storage-net
 
   tunnel:
-    image: cloudflare/cloudflared:latest
+    image: ngrok/ngrok:latest
     container_name: minio-tunnel
     restart: unless-stopped
     depends_on:
       - minio
-    command: tunnel --no-autoupdate --url http://minio:9000
+    ports:
+      - "4040:4040"
+    environment:
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
+      NGROK_DOMAIN: ${NGROK_DOMAIN:-}
+    entrypoint:
+      - "/bin/sh"
+      - "-c"
+      - |
+        if [ -n "$$NGROK_DOMAIN" ]; then
+          exec ngrok http --domain="$$NGROK_DOMAIN" minio:9000
+        else
+          exec ngrok http minio:9000
+        fi
     networks:
       - storage-net
 

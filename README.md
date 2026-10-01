@@ -1,32 +1,32 @@
-# 🚀 Secure Local S3 Storage & Public Tunnel Setup
+# 🚀 Secure Local S3 Storage & Permanent Ngrok Tunnel Setup
 
-An automated, production-ready, local S3-compatible object storage server powered by **MinIO** and exposed over a secure HTTPS public tunnel via **Cloudflare Tunnel (`cloudflared`)**.
+An automated, production-ready, local S3-compatible object storage server powered by **MinIO** and exposed over a **permanent, fixed public URL** via **Ngrok Free Static Subdomain**.
 
-This project provides a plug-and-play local S3 environment for **mobile applications (Flutter, React Native, iOS, Android)** and **backend APIs (Node.js, Python, Go)** to upload, store, and publicly serve media assets such as profile pictures, camera captures, and document scans without needing a paid AWS S3 account during development.
+This project provides a plug-and-play local S3 environment for **mobile applications (Flutter, React Native, iOS, Android)** and **backend APIs (Node.js, Python, Go)** to upload, store, and publicly serve media assets such as profile pictures, camera captures, and document scans without paying for cloud storage or dealing with changing tunnel URLs.
 
 ---
 
 ## ✨ Features & Architecture
 
 - 🗄️ **MinIO S3 Engine:** High-performance, AWS S3-compatible object storage running locally in Docker with persistent disk storage (`minio-data/`).
-- 🌐 **Instant Public HTTPS Tunnel:** Integrated Cloudflare Tunnel gives your mobile app or frontend a real `https://*.trycloudflare.com` URL to upload and fetch images from anywhere over the internet.
+- 🌐 **Permanent Fixed Public Domain:** Free static subdomain from Ngrok (`https://your-domain.ngrok-free.app`) that **never changes across restarts or computer reboots**.
 - 🤖 **Zero-Config Auto-Initialization:** Automated initialization container (`minio-init`) polls the storage engine, creates the default bucket (`app-images`), and configures the public-read download policy.
-- ⚡ **1-Click Startup:** Includes cross-platform scripts (`start.bat`, `start.ps1`, `start.sh`) that auto-generate secure credentials and launch the entire stack in seconds.
-- 🔒 **Secure by Default:** Secrets and uploaded user files are excluded from Git version control via `.gitignore`.
+- ⚡ **1-Click Startup:** Includes cross-platform scripts (`start.bat`, `start.ps1`, `start.sh`) with auto-generated credentials and live log viewing.
+- 🔒 **Secure by Default:** Secrets, credentials, and uploaded user files are strictly excluded from Git version control via `.gitignore`.
 
 ```text
 +-----------------------------------------------------------------------------------+
 |                         Docker Compose Stack (storage-net)                        |
 |                                                                                   |
 |  +--------------------+       +-------------------+       +--------------------+  |
-|  |    minio-server    | <----+     minio-init     |       |    minio-tunnel    |  |
-|  |  (S3 API & Console)|       | (Auto Bucket Init)|       | (Cloudflare Tunnel)|  |
+|  |    minio-server    | <----+     minio-init     |       |    ngrok-tunnel    |  |
+|  |  (S3 API & Console)|       | (Auto Bucket Init)|       |  (Static Domain)   |  |
 |  +--------------------+       +-------------------+       +--------------------+  |
 |         |        |                                                   |            |
 +---------|--------|---------------------------------------------------|------------+
           |        |                                                   |
-     Local Ports:  |                                              Public HTTPS:
-     :9000 (API)   +---> Web Admin Console                        https://xxxx.trycloudflare.com
+     Local Ports:  |                                              Permanent HTTPS:
+     :9000 (API)   +---> Web Admin Console                        https://your-name.ngrok-free.app
                          http://localhost:9001
 ```
 
@@ -34,9 +34,11 @@ This project provides a plug-and-play local S3 environment for **mobile applicat
 
 ## 📋 Prerequisites
 
-Before running this project, make sure you have installed:
-- **[Docker Desktop](https://www.docker.com/products/docker-desktop/)** (with Docker Compose v2+)
-- **Git**
+1. **[Docker Desktop](https://www.docker.com/products/docker-desktop/)** (with Docker Compose v2+)
+2. **Free Ngrok Account:**
+   - Sign up at: **[https://dashboard.ngrok.com/signup](https://dashboard.ngrok.com/signup)**
+   - Copy your authtoken from **[Your Authtoken](https://dashboard.ngrok.com/get-started/your-authtoken)**
+   - Claim your free permanent domain from **[Domains](https://dashboard.ngrok.com/domains)** (e.g. `your-app.ngrok-free.app`)
 
 ---
 
@@ -44,11 +46,22 @@ Before running this project, make sure you have installed:
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/Muhd99/your-repo-name.git
-cd cloude/local-storage-backend
+git clone https://github.com/Muhdmechatronic/local-storage-backend.git
+cd local-storage-backend/local-storage-backend
 ```
 
-### 2. Launch the Storage Stack (1-Click)
+### 2. Configure Your Free Ngrok Static Domain
+Copy `.env.example` to `.env` (or run `start.bat` to configure interactively):
+```env
+MINIO_ROOT_USER=admin
+MINIO_ROOT_PASSWORD=YourSecurePassword123!
+MINIO_DEFAULT_BUCKET=app-images
+
+NGROK_AUTHTOKEN=your_token_from_ngrok_dashboard
+NGROK_DOMAIN=your-claimed-domain.ngrok-free.app
+```
+
+### 3. Launch the Storage Stack (1-Click)
 
 #### On Windows (PowerShell or Command Prompt):
 ```powershell
@@ -71,20 +84,15 @@ docker compose up -d --build
 
 ## 🔑 Access Details & Credentials
 
-When the startup script finishes, your credentials and endpoints will be printed to your terminal:
+When the startup script finishes, your endpoints and credentials will be displayed in the terminal:
 
 | Service | URL / Port | Credentials |
 | :--- | :--- | :--- |
 | **Web Admin Console** | `http://localhost:9001` | Username: `admin`<br>Password: *(in `.env`)* |
+| **Permanent S3 API (Public)** | `https://your-domain.ngrok-free.app` | Same as above |
 | **Local S3 API** | `http://localhost:9000` | Same as above |
-| **Public S3 API (Tunnel)** | `https://xxxx.trycloudflare.com` | Same as above |
+| **Ngrok Web Inspector** | `http://localhost:4040` | Inspect live HTTP requests |
 | **Default Bucket** | `app-images` | Initialized with public read access |
-
-### Retrieving Your Auto-Generated Password:
-Your password is automatically stored in `local-storage-backend/.env`. You can view it at any time with:
-```powershell
-Get-Content local-storage-backend\.env
-```
 
 ---
 
@@ -93,9 +101,9 @@ Get-Content local-storage-backend\.env
 ### 1. Recommended Image URL Pattern
 Because the `app-images` bucket has public-read permissions enabled, any uploaded photo is instantly reachable over HTTPS:
 ```text
-https://<tunnel-url>/app-images/<folder>/<filename>
+https://your-domain.ngrok-free.app/app-images/<folder>/<filename>
 ```
-*Example:* `https://xxxx.trycloudflare.com/app-images/profiles/user_123/avatar.jpg`
+*Example:* `https://your-domain.ngrok-free.app/app-images/profiles/user_123/avatar.jpg`
 
 ---
 
@@ -107,7 +115,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 Future<void> uploadPhoto(File imageFile, String fileName) async {
-  final url = Uri.parse('https://<tunnel-url>/app-images/captures/$fileName');
+  final url = Uri.parse('https://your-domain.ngrok-free.app/app-images/captures/$fileName');
   final bytes = await imageFile.readAsBytes();
 
   final response = await http.put(
@@ -125,7 +133,7 @@ Future<void> uploadPhoto(File imageFile, String fileName) async {
 #### B. In Mobile App (React Native / Expo):
 ```javascript
 <Image
-  source={{ uri: 'https://<tunnel-url>/app-images/profiles/user_123/avatar.jpg' }}
+  source={{ uri: 'https://your-domain.ngrok-free.app/app-images/profiles/user_123/avatar.jpg' }}
   style={{ width: 100, height: 100, borderRadius: 50 }}
 />
 ```
@@ -135,7 +143,7 @@ Future<void> uploadPhoto(File imageFile, String fileName) async {
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
 const s3 = new S3Client({
-  endpoint: process.env.S3_ENDPOINT || "http://localhost:9000",
+  endpoint: process.env.MINIO_SERVER_URL || "http://localhost:9000",
   region: "us-east-1",
   credentials: {
     accessKeyId: process.env.MINIO_ROOT_USER || "admin",
@@ -169,7 +177,9 @@ docker compose down
 │   ├── init/
 │   │   ├── Dockerfile         # Auto-initialization container definition
 │   │   └── init.sh            # Bucket creation & policy automation script
-│   ├── docker-compose.yml     # Multi-service stack (MinIO, Init, Cloudflare)
+│   ├── minio/
+│   │   └── Dockerfile         # Self-contained MinIO Server build definition
+│   ├── docker-compose.yml     # Multi-service stack (MinIO, Init, Ngrok)
 │   ├── .env.example           # Configuration template
 │   ├── .gitignore             # Prevents committing .env and media data
 │   ├── start.ps1              # 1-Click launcher (PowerShell)
@@ -182,14 +192,6 @@ docker compose down
 ├── .gitignore                 # Root repository ignore rules
 └── README.md                  # Main project documentation
 ```
-
----
-
-## 🔒 Security Notice
-
-- The `.env` file contains sensitive administrative credentials and is **never committed to Git**.
-- The `minio-data/` folder contains your persistent media uploads and is **excluded from Git** to prevent repository bloat and data leakage.
-- When sharing this project, always use `.env.example` as a reference template.
 
 ---
 
