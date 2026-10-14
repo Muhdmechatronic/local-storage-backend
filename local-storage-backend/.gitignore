@@ -1,3 +1,5 @@
 .env
 minio-data/
 *.log
+tools/
+logs/

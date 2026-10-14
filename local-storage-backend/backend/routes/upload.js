@@ -5,10 +5,10 @@ import { logger } from '../utils/logger.js';
 
 const router = express.Router();
 
-// Initialize MinIO client (using Docker service name)
+// Initialize MinIO client (Docker service name by default; set MINIO_ENDPOINT=127.0.0.1 when running without Docker)
 const minioClient = new Client({
-  endPoint: 'minio',  // Docker service name
-  port: 9000,
+  endPoint: process.env.MINIO_ENDPOINT || 'minio',
+  port: Number(process.env.MINIO_PORT) || 9000,
   useSSL: false,
   accessKey: process.env.MINIO_ROOT_USER,
   secretKey: process.env.MINIO_ROOT_PASSWORD,
