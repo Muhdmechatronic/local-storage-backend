@@ -1,0 +1,108 @@
+{
+  "version": 1,
+  "defaults": {
+    "category": "Other",
+    "healthType": "Moderate",
+    "mealType": "Lunch"
+  },
+  "categories": [
+    {
+      "name": "Rice & Grain",
+      "description": "Use for rice-based and grain-based meals:",
+      "examples": ["Nasi Lemak", "Nasi Ayam", "Nasi Goreng", "Nasi Kandar", "Nasi Kerabu", "Nasi Dagang", "Biryani", "Rice bowls", "Porridge", "Other primarily rice/grain-based meals"],
+      "aliases": ["rice", "grain", "nasi", "porridge"]
+    },
+    {
+      "name": "Noodles & Soup",
+      "description": "Use for noodle-based or soup-based dishes:",
+      "examples": ["Mee Goreng", "Mee Rebus", "Laksa", "Char Kway Teow", "Kuey Teow", "Bihun", "Maggi", "Ramen", "Pasta when it is primarily a noodle/pasta dish", "Tom Yam", "Chicken soup", "Other primarily noodle/soup dishes"],
+      "aliases": ["noodle", "soup", "pasta", "mee"]
+    },
+    {
+      "name": "Meat & Seafood",
+      "description": "Use when meat, poultry, fish, or seafood is the MAIN food:",
+      "examples": ["Grilled chicken", "Fried chicken", "Beef steak", "Rendang", "Satay", "Grilled fish", "Salmon", "Prawns", "Other meat or seafood dishes"],
+      "aliases": ["seafood", "meat", "fish", "poultry", "chicken", "protein"]
+    },
+    {
+      "name": "Vegetables",
+      "description": "Use when vegetables are the MAIN food:",
+      "examples": ["Vegetable salad", "Stir-fried vegetables", "Steamed vegetables", "Vegetable dishes", "Mixed vegetable dishes where vegetables are clearly the main component"],
+      "aliases": ["vegetable", "veggie", "salad"]
+    },
+    {
+      "name": "Fruits",
+      "description": "Use when fruit is the MAIN food:",
+      "examples": ["Apple", "Banana", "Watermelon", "Mango", "Fruit plate", "Mixed fruit"],
+      "aliases": ["fruit"]
+    },
+    {
+      "name": "Bread & Pastry",
+      "description": "Use for bread, flatbread, bakery products and pastries:",
+      "examples": ["Roti Canai", "Roti Prata", "Bread", "Croissant", "Bun", "Donut", "Pastry", "Toast", "Sandwich bread"],
+      "aliases": ["bread", "pastr", "bakery", "roti"]
+    },
+    {
+      "name": "Snacks",
+      "description": "Use for smaller snack foods that are not primarily a full meal:",
+      "examples": ["Curry puff", "Kuih", "Spring rolls", "Chips", "Crackers", "Nuts", "Popcorn", "Small snack portions"],
+      "aliases": ["snack", "kuih"]
+    },
+    {
+      "name": "Fast Food",
+      "description": "Use when the food is clearly a fast-food style meal:",
+      "examples": ["Burger meal", "Fried chicken meal with fries", "Pizza when clearly presented as fast-food style", "Hot dog", "Fast-food nuggets", "Fast-food fries", "Other clearly identifiable fast food"],
+      "aliases": ["fast food", "fastfood", "fast-food", "junk"]
+    },
+    {
+      "name": "Desserts",
+      "description": "Use for sweet foods primarily eaten as dessert:",
+      "examples": ["Cake", "Ice cream", "Pudding", "Cheesecake", "Brownie", "Sweet dessert", "Kuih dessert when clearly functioning as a dessert"],
+      "aliases": ["dessert", "sweet", "cake"]
+    },
+    {
+      "name": "Drinks",
+      "description": "Use ONLY when the image is primarily a beverage:",
+      "examples": ["Teh Tarik", "Coffee", "Tea", "Milo", "Juice", "Smoothie", "Milkshake", "Soft drink", "Water", "Other beverages"],
+      "aliases": ["drink", "beverage", "minuman"]
+    },
+    {
+      "name": "Dairy",
+      "description": "Use when dairy is the MAIN food:",
+      "examples": ["Milk", "Yogurt", "Cheese", "Other primarily dairy foods"],
+      "aliases": ["dairy", "milk"]
+    },
+    {
+      "name": "Other",
+      "description": "Use only when the food genuinely does not fit the categories above.",
+      "examples": [],
+      "aliases": []
+    }
+  ],
+  "categoryGuidelines": ["Choose the category based on the MAIN food, not a minor ingredient.", "Do not classify a rice meal as Meat & Seafood just because it contains chicken.", "Do not classify a drink as Dairy just because it contains milk.", "Do not classify every fried food as Fast Food.", "Use Fast Food only when the food is clearly a fast-food-style product or meal.", "Use Snacks for small snack foods.", "Use Desserts for foods primarily intended as desserts.", "Use Other only as a last resort."],
+  "categoryExamples": ["Nasi Lemak + chicken = \"Rice & Grain\"", "Nasi Goreng + egg = \"Rice & Grain\"", "Mee Goreng + chicken = \"Noodles & Soup\"", "Char Kway Teow = \"Noodles & Soup\"", "Grilled chicken = \"Meat & Seafood\"", "Satay = \"Meat & Seafood\"", "Roti Canai = \"Bread & Pastry\"", "Apple = \"Fruits\"", "Salad = \"Vegetables\"", "Teh Tarik = \"Drinks\"", "Cake = \"Desserts\"", "Burger + fries = \"Fast Food\""],
+  "healthTypes": [
+    {
+      "name": "Healthy",
+      "description": "Generally nutrient-dense foods or balanced meals:",
+      "examples": ["Fruits", "Vegetables", "Lean protein", "Grilled/steamed/boiled foods", "Meals with vegetables and reasonable portions", "Foods with relatively low added sugar and excessive oil"],
+      "aliases": ["healthy"]
+    },
+    {
+      "name": "Moderate",
+      "description": "Normal foods that can reasonably fit into a balanced diet but may contain significant calories, oil, carbohydrates, fat, sugar, or sodium.",
+      "examplesLabel": "Examples:",
+      "examples": ["Nasi Lemak", "Nasi Goreng", "Char Kway Teow", "Roti Canai", "Pizza", "Pasta", "Teh Tarik"],
+      "aliases": ["moderate", "medium"]
+    },
+    {
+      "name": "Junk Food",
+      "description": "Primarily highly processed, heavily fried, very sugary, or typical fast food with relatively low nutritional value.",
+      "examplesLabel": "Examples:",
+      "examples": ["Fast-food burger and fries", "Fried chicken fast-food meal", "Sugary desserts", "Candy", "Very sugary drinks", "Highly processed snack foods"],
+      "aliases": ["junk", "unhealthy"]
+    }
+  ],
+  "healthTypeGuidelines": ["Do NOT classify something as Healthy merely because it contains vegetables.", "Do NOT classify every fried food as Junk Food.", "Consider the overall meal, cooking method, ingredients, portion, added oil, sugar, and nutritional balance.", "When uncertain between Healthy and Junk Food, use Moderate."],
+  "mealTypes": ["Breakfast", "Lunch", "Dinner", "Snack", "Drink", "Unknown"]
+}

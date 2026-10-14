@@ -35,12 +35,70 @@ services:
     networks:
       - storage-net
 
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: local/urbanmove-backend:latest
+    container_name: urbanmove-backend
+    restart: unless-stopped
+    ports:
+      - "5000:3000"
+    environment:
+      BACKEND_PORT: 3000
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_DEFAULT_BUCKET: ${MINIO_DEFAULT_BUCKET:-app-images}
+      MINIO_SERVER_URL: ${MINIO_SERVER_URL}
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      # Scan model load balancer (empty = built-in default, see BACKEND_SETUP.md)
+      GEMINI_MODELS: ${GEMINI_MODELS:-}
+      MODEL_RPM_LIMIT: ${MODEL_RPM_LIMIT:-}
+      MODEL_RPD_LIMIT: ${MODEL_RPD_LIMIT:-}
+      MODEL_LIMIT_OVERRIDES: ${MODEL_LIMIT_OVERRIDES:-}
+      MODEL_RPD_RESET_TZ: ${MODEL_RPD_RESET_TZ:-}
+      SCAN_QUEUE_MAX_SIZE: ${SCAN_QUEUE_MAX_SIZE:-}
+      SCAN_QUEUE_TIMEOUT_MS: ${SCAN_QUEUE_TIMEOUT_MS:-}
+      SCAN_REQUEST_DEADLINE_MS: ${SCAN_REQUEST_DEADLINE_MS:-}
+      SCAN_ATTEMPT_TIMEOUT_MS: ${SCAN_ATTEMPT_TIMEOUT_MS:-}
+      SCAN_MAX_ATTEMPTS: ${SCAN_MAX_ATTEMPTS:-}
+      SCAN_CIRCUIT_FAILURE_THRESHOLD: ${SCAN_CIRCUIT_FAILURE_THRESHOLD:-}
+      SCAN_CIRCUIT_COOLDOWN_MS: ${SCAN_CIRCUIT_COOLDOWN_MS:-}
+      DEBUG_AI_RESPONSE: ${DEBUG_AI_RESPONSE:-false}
+      QUOTA_STORE: ${QUOTA_STORE:-memory}
+      REDIS_URL: ${REDIS_URL:-}
+      FIREBASE_PROJECT_ID: ${FIREBASE_PROJECT_ID}
+      FIREBASE_CLIENT_EMAIL: ${FIREBASE_CLIENT_EMAIL}
+      FIREBASE_PRIVATE_KEY: ${FIREBASE_PRIVATE_KEY}
+    volumes:
+      # Edit backend/config/foodOptions.json on the host; changes apply within seconds (no rebuild)
+      - ./backend/config:/app/config:ro
+    depends_on:
+      - minio
+    networks:
+      - storage-net
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    image: local/nginx-proxy:latest
+    container_name: nginx-proxy
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      - minio
+      - backend
+    networks:
+      - storage-net
+
   tunnel:
     image: ngrok/ngrok:latest
     container_name: minio-tunnel
     restart: unless-stopped
     depends_on:
-      - minio
+      - nginx
     ports:
       - "4040:4040"
     environment:
@@ -51,9 +109,9 @@ services:
       - "-c"
       - |
         if [ -n "$$NGROK_DOMAIN" ]; then
-          exec ngrok http --url="https://$$NGROK_DOMAIN" minio:9000
+          exec ngrok http --url="https://$$NGROK_DOMAIN" nginx:80
         else
-          exec ngrok http minio:9000
+          exec ngrok http nginx:80
         fi
     networks:
       - storage-net

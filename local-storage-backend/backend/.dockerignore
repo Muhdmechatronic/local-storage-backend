@@ -1,0 +1,8 @@
+# Keep the production image free of tests, mocks and simulation scripts
+node_modules
+test
+scripts
+.env
+npm-debug.log
+yarn-error.log
+.DS_Store

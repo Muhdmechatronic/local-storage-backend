@@ -58,6 +58,32 @@ docker compose up -d --build
 
 ---
 
+## 📊 View Live Logs (No Rebuild)
+
+Monitor your services in real-time without rebuilding:
+
+#### Backend API Logs Only (Monitor Uploads):
+```cmd
+logs-backend.bat
+```
+Shows live logs from the backend API - perfect for monitoring user uploads and API requests.
+
+#### Backend + Nginx Logs:
+```cmd
+logs.bat
+```
+Shows backend and nginx proxy logs together.
+
+#### All Services Logs:
+```cmd
+logs-all.bat
+```
+Shows logs from all services (backend, minio, nginx, tunnel).
+
+Press `Ctrl+C` to stop viewing logs. Services keep running.
+
+---
+
 ## 🛑 Stopping the Stack
 
 ```powershell
