@@ -55,10 +55,13 @@ router.post('/', verifyAuth, async (req, res) => {
       });
     }
 
-    // Generate unique filename
+    // Generate unique filename with food, year, month folder structure
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
     const timestamp = Date.now();
     const sanitizedFileName = fileName.replace(/[^a-zA-Z0-9.-]/g, '_');
-    const objectName = `users/${userId}/${timestamp}_${sanitizedFileName}`;
+    const objectName = `users/${userId}/food/${year}/${month}/${timestamp}_${sanitizedFileName}`;
 
     const bucket = process.env.MINIO_DEFAULT_BUCKET || 'app-images';
 
