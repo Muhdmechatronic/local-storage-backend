@@ -226,6 +226,15 @@ if (-not (Wait-Url "http://127.0.0.1:3000/api/health" 30)) {
 # Relative paths only: nginx for Windows fails to open absolute paths that are
 # long or contain spaces / non-ASCII characters (e.g. Downloads, OneDrive).
 # The prefix is the working directory (tools\nginx-<ver>), so ../../ is the repo root.
+# Clear the old nginx error log so logs-all-local.bat doesn't replay stale errors.
+Remove-Item (Join-Path $NginxDir "logs\error.log") -ErrorAction SilentlyContinue
+$nginxConfFile = Join-Path $ScriptDir "nginx\nginx.local.conf"
+try { [System.IO.File]::ReadAllText($nginxConfFile) | Out-Null }
+catch {
+    Write-Host "[!] Cannot read $nginxConfFile" -ForegroundColor Red
+    Write-Host "    If the folder is in OneDrive, right-click it > 'Always keep on this device'," -ForegroundColor Red
+    Write-Host "    or move the project to a plain folder like C:\local-storage-backend" -ForegroundColor Red
+}
 Start-LocalService "nginx" $NginxDir "nginx.exe -p ./ -c ../../nginx/nginx.local.conf"
 
 $tunnelUrl = "Disabled (set NGROK_AUTHTOKEN in .env)"
