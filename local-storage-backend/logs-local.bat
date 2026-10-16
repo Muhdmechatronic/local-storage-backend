@@ -4,7 +4,7 @@ cd /d "%~dp0"
 echo ========================================================
 echo    Backend API Live Logs (NO Docker mode)
 echo ========================================================
-echo  Other logs: logs\minio.log  logs\nginx.log  logs\ngrok.log
+echo  All services: logs-all-local.bat
 echo  Press Ctrl+C to stop viewing logs
 echo ========================================================
 echo.

@@ -31,12 +31,12 @@ Double-click `start.bat` and choose:
 
 Stop either mode with `stop.bat`.
 
-**No-Docker mode details** (`start-local.bat`, `stop-local.bat`, `logs-local.bat`):
+**No-Docker mode details** (`start-local.bat`, `stop-local.bat`, `logs-local.bat`, `logs-all-local.bat`):
 - Nothing needs to be installed first. If Node.js/npm is missing, a portable copy is downloaded into `tools\node` (no admin rights needed).
 - On the first run, MinIO is built from source with a temporary Go that is deleted afterwards (MinIO no longer ships free binaries). nginx and ngrok are downloaded into `tools\`. **First run takes about 5–15 minutes**; later runs start in seconds.
 - To skip the build on another laptop, copy your `tools\` folder over.
 - Same `.env`, same ports as Docker (API via nginx on `8080`, MinIO `9000`/`9001`, ngrok `4040`). The backend runs on `3000`.
-- Logs are written to `logs\` (`logs-local.bat` follows the backend log). Services keep running in the background until `stop.bat`.
+- Logs are written to `logs\` (`logs-local.bat` follows the backend log, `logs-all-local.bat` follows every service). Services keep running in the background until `stop.bat`.
 - Don't run both modes at the same time, because they use the same ports.
 
 #### Docker only (CMD / PowerShell):

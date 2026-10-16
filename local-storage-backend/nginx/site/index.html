@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Beyond Healthy - Fitness, Meals and Progress in One App</title>
+  <meta name="description" content="Beyond Healthy brings GPS workout tracking, AI meal scanning, step counting and progress tracking together in one simple Android app.">
+  <meta name="theme-color" content="#7b2cff">
+  <meta property="og:title" content="Beyond Healthy">
+  <meta property="og:description" content="Track workouts, log meals and see your progress in one app.">
+  <meta property="og:image" content="site-assets/app-icon.jpg">
+  <link rel="icon" href="site-assets/app-icon.jpg" type="image/jpeg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="site-assets/site.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="Beyond Healthy home">
+        <img src="site-assets/app-icon.jpg" alt="" width="40" height="40">
+        <span>Beyond Healthy</span>
+      </a>
+      <nav class="nav" aria-label="Main">
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How it works</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="delete-account.html">Account deletion</a>
+      </nav>
+      <details class="nav-toggle">
+        <summary aria-label="Open menu"><svg class="icon" aria-hidden="true"><use href="site-assets/icons.svg#menu"/></svg></summary>
+        <div class="nav-panel">
+          <a href="#features">Features</a>
+          <a href="#how-it-works">How it works</a>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="delete-account.html">Account deletion</a>
+        </div>
+      </details>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy reveal">
+          <span class="eyebrow"><svg class="icon icon-sm" aria-hidden="true"><use href="site-assets/icons.svg#heart-pulse"/></svg>Fitness and nutrition tracker</span>
+          <h1>Your workouts, meals and progress in one place.</h1>
+          <p class="lead">Beyond Healthy records your walks, runs and rides with GPS, estimates your meals from a photo, and shows exactly how far you have come since day one.</p>
+          <div class="hero-actions">
+            <!-- Replace this span with a link to the Play Store listing once the app is live. -->
+            <span class="btn btn-soon" role="note"><svg class="icon" aria-hidden="true"><use href="site-assets/icons.svg#smartphone"/></svg><span>Coming soon on <strong>Google Play</strong></span></span>
+            <a class="btn btn-secondary" href="#features">Explore features<svg class="icon icon-sm" aria-hidden="true"><use href="site-assets/icons.svg#arrow-right"/></svg></a>
+          </div>
+          <ul class="hero-points">
+            <li><svg class="icon icon-sm" aria-hidden="true"><use href="site-assets/icons.svg#check"/></svg>No advertising</li>
+            <li><svg class="icon icon-sm" aria-hidden="true"><use href="site-assets/icons.svg#check"/></svg>Your data is never sold</li>
+            <li><svg class="icon icon-sm" aria-hidden="true"><use href="site-assets/icons.svg#check"/></svg>Delete your data any time</li>
+          </ul>
+        </div>
+
+        <div class="hero-visual reveal reveal-delay" aria-hidden="true">
+          <div class="phone">
+            <div class="phone-screen">
+              <div class="phone-notch"></div>
+              <div class="phone-body">
+                <div class="phone-title"><span>Morning Run</span><span class="phone-chip">Completed</span></div>
+                <div class="phone-map">
+                  <svg viewBox="0 0 280 150" role="presentation">
+                    <defs>
+                      <linearGradient id="speed" x1="0" x2="1" y1="0" y2="0">
+                        <stop offset="0" stop-color="#22c55e"/>
+                        <stop offset="0.45" stop-color="#eab308"/>
+                        <stop offset="0.75" stop-color="#f97316"/>
+                        <stop offset="1" stop-color="#7b2cff"/>
+                      </linearGradient>
+                    </defs>
+                    <rect width="280" height="150" fill="#eef1ee"/>
+                    <path d="M0 40 H280 M0 104 H280 M70 0 V150 M180 0 V150" stroke="#ffffff" stroke-width="10"/>
+                    <path d="M0 70 C60 60 120 90 280 72" stroke="#dfe5df" stroke-width="6" fill="none"/>
+                    <path d="M28 122 C52 96 60 66 96 58 S150 92 182 70 S228 30 252 32" fill="none" stroke="url(#speed)" stroke-width="7" stroke-linecap="round"/>
+                    <circle cx="28" cy="122" r="7" fill="#fff" stroke="#22c55e" stroke-width="4"/>
+                    <circle cx="252" cy="32" r="7" fill="#fff" stroke="#7b2cff" stroke-width="4"/>
+                  </svg>
+                </div>
+                <div class="phone-hero-metric"><span>Distance</span><strong>5.24 km</strong></div>
+                <div class="phone-stats">
+                  <div class="phone-stat"><strong>31:08</strong><span>Time</span></div>
+                  <div class="phone-stat"><strong>5'56"</strong><span>Avg pace</span></div>
+                  <div class="phone-stat"><strong>342</strong><span>kcal</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="features">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Features</span>
+          <h2>Everything you need to build healthier habits</h2>
+          <p>One app for moving more, eating better and seeing real progress, designed to be simple enough to use every day.</p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="card feature">
+            <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="site-assets/icons.svg#route"/></svg></div>
+            <h3>GPS workout tracking</h3>
+            <p>Record walks, runs and rides with live distance, time, speed and pace. Your route is colour-coded by speed, and tracking keeps going with the screen locked.</p>
+          </article>
+          <article class="card feature">
+            <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="site-assets/icons.svg#camera"/></svg></div>
+            <h3>AI meal scanning</h3>
+            <p>Take a photo of your meal and get an estimated breakdown of calories and nutrients in seconds. Prefer typing? Add foods manually instead.</p>
+          </article>
+          <article class="card feature">
+            <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="site-assets/icons.svg#footprints"/></svg></div>
+            <h3>Step counting</h3>
+            <p>Count your daily steps with your phone's motion sensor and review your activity history over time.</p>
+          </article>
+          <article class="card feature">
+            <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="site-assets/icons.svg#trending-up"/></svg></div>
+            <h3>Before vs After progress</h3>
+            <p>Compare your weight and BMI with your starting point, follow the trend on a chart with your target marked, and review every update.</p>
+          </article>
+          <article class="card feature">
+            <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="site-assets/icons.svg#flame"/></svg></div>
+            <h3>Personal calorie target</h3>
+            <p>Get a daily calorie goal calculated from your profile and activity level, whether you want to lose, maintain or gain weight.</p>
+          </article>
+          <article class="card feature">
+            <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="site-assets/icons.svg#trophy"/></svg></div>
+            <h3>Daily challenges</h3>
+            <p>Stay motivated with small daily challenges that keep you moving and make healthy habits stick.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-tight" id="how-it-works">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">How it works</span>
+          <h2>Start in three simple steps</h2>
+        </div>
+        <div class="steps">
+          <div class="card step">
+            <h3>Create your profile</h3>
+            <p>Sign up and enter your age, height, weight and goal. Your first measurement becomes your baseline.</p>
+          </div>
+          <div class="card step">
+            <h3>Track and log</h3>
+            <p>Record workouts, count your steps and log meals with a photo or by hand as you go through your day.</p>
+          </div>
+          <div class="card step">
+            <h3>See your progress</h3>
+            <p>Watch your trends, compare before and after, and adjust your goals as you improve.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="privacy">
+      <div class="container">
+        <div class="band">
+          <span class="eyebrow" style="background: rgba(255,255,255,0.16); color: #fff;"><svg class="icon icon-sm" aria-hidden="true"><use href="site-assets/icons.svg#shield-check"/></svg>Privacy first</span>
+          <h2>Your health data stays under your control</h2>
+          <p class="lead">We collect only what the app needs to work, explain exactly how it is used, and let you remove it whenever you choose.</p>
+          <div class="band-grid">
+            <div class="band-item">
+              <svg class="icon" aria-hidden="true"><use href="site-assets/icons.svg#map-pin"/></svg>
+              <h3>Location only during workouts</h3>
+              <p>GPS is used only while you record a workout you started, with a notification always visible.</p>
+            </div>
+            <div class="band-item">
+              <svg class="icon" aria-hidden="true"><use href="site-assets/icons.svg#ban"/></svg>
+              <h3>No ads, no selling</h3>
+              <p>We do not show advertising and we never sell your personal data.</p>
+            </div>
+            <div class="band-item">
+              <svg class="icon" aria-hidden="true"><use href="site-assets/icons.svg#lock"/></svg>
+              <h3>Encrypted connections</h3>
+              <p>Data is sent over HTTPS and stored with Google Firebase, encrypted at rest.</p>
+            </div>
+            <div class="band-item">
+              <svg class="icon" aria-hidden="true"><use href="site-assets/icons.svg#trash"/></svg>
+              <h3>Delete any time</h3>
+              <p>Remove individual records in the app, or request full account deletion.</p>
+            </div>
+          </div>
+          <div class="band-actions">
+            <a class="btn btn-light" href="privacy.html"><svg class="icon icon-sm" aria-hidden="true"><use href="site-assets/icons.svg#file-text"/></svg>Read the Privacy Policy</a>
+            <a class="btn btn-outline-light" href="delete-account.html">Delete your account</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-tight" id="about">
+      <div class="container">
+        <div class="card about">
+          <div class="icon-tile"><svg class="icon" aria-hidden="true"><use href="site-assets/icons.svg#graduation"/></svg></div>
+          <div>
+            <h2 style="font-size: 1.5rem;">About Beyond Healthy</h2>
+            <div class="about-text">
+              <p>Beyond Healthy is developed by the Beyond Healthy Team as part of a university research project on everyday physical activity, nutrition and wellbeing. The app helps participants and everyday users build healthier routines, while giving the research team the insight they need to support them.</p>
+              <p>Beyond Healthy is a general fitness and wellness app. It is not a medical device and does not provide medical advice.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section cta">
+      <div class="container">
+        <div class="card">
+          <h2>Ready to go beyond healthy?</h2>
+          <p>Beyond Healthy is coming soon to Google Play. Questions in the meantime? We are happy to help.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="mailto:beyondhealthy10@gmail.com"><svg class="icon icon-sm" aria-hidden="true"><use href="site-assets/icons.svg#mail"/></svg>Contact us</a>
+            <a class="btn btn-secondary" href="privacy.html">Privacy Policy</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a class="brand" href="index.html"><img src="site-assets/app-icon.jpg" alt="" width="40" height="40"><span>Beyond Healthy</span></a>
+          <p style="margin-top: 14px;">Fitness tracking, meal logging and progress in one app. Developed by the Beyond Healthy Team.</p>
+        </div>
+        <div>
+          <div class="footer-title">Legal</div>
+          <ul class="footer-links">
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="delete-account.html">Account deletion</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-title">Contact</div>
+          <ul class="footer-links">
+            <li><a href="mailto:beyondhealthy10@gmail.com"><svg class="icon icon-sm" aria-hidden="true"><use href="site-assets/icons.svg#mail"/></svg>beyondhealthy10@gmail.com</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>Copyright 2026 Beyond Healthy Team. All rights reserved.</span>
+        <span>Google Play is a trademark of Google LLC.</span>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

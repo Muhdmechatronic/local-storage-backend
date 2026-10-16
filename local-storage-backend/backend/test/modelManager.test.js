@@ -216,14 +216,17 @@ test('unknown / retired model (404) is disabled and traffic fails over', async (
   assert.equal(stats.models.find((m) => m.model === 'model-a').status, 'disabled');
 });
 
-test('a model that is down (always 503) is circuit-broken, then re-tried after cooldown and restored', async () => {
+test('a model that is down (always 503) is circuit-broken, kept behind healthy models, and restored', async () => {
   let down = true;
+  let othersBusy = false;
   const { manager, provider, events } = createHarness({
     manager: { circuitFailureThreshold: 2, circuitCooldownMs: 150 },
     provider: {
-      behavior: ({ model }) => model === 'model-a' && down
-        ? { error: new ProviderError('server', 'unavailable', { status: 503 }) }
-        : undefined,
+      behavior: ({ model }) => {
+        if (model === 'model-a' && down) return { error: new ProviderError('server', 'unavailable', { status: 503 }) };
+        if (model !== 'model-a' && othersBusy) return { error: new ProviderError('rate_limit', 'busy', { status: 429, retryAfterMs: 1_000 }) };
+        return undefined;
+      },
     },
   });
 
@@ -231,18 +234,31 @@ test('a model that is down (always 503) is circuit-broken, then re-tried after c
   assert.equal(provider.calls.filter((c) => c.model === 'model-a').length, 2, 'only threshold failures before the circuit opens');
   assert.ok(events.some((e) => e.event === 'circuit.opened' && e.model === 'model-a'));
 
-  // After cooldown a single trial request fails -> circuit re-opens immediately.
+  // Cooldown over, but healthy models exist: user requests are not sent to the recovering model.
   await sleep(170);
   for (let i = 0; i < 6; i++) await manager.execute({});
-  assert.equal(provider.calls.filter((c) => c.model === 'model-a').length, 3);
+  assert.equal(provider.calls.filter((c) => c.model === 'model-a').length, 2);
 
-  // Model recovers: after the next cooldown it is reintroduced and gets its fair share again.
+  // Healthy models become unavailable -> the recovering model gets its trial, succeeds, circuit closes.
   down = false;
-  await sleep(170);
-  const used = [];
-  for (let i = 0; i < 6; i++) used.push((await manager.execute({})).model);
-  assert.equal(used.filter((m) => m === 'model-a').length, 2);
+  othersBusy = true;
+  const out = await manager.execute({});
+  assert.equal(out.model, 'model-a');
   assert.ok(events.some((e) => e.event === 'circuit.closed' && e.model === 'model-a'));
+});
+
+test('circuit cooldown doubles after each failed trial, up to the max', async () => {
+  const { manager, events } = createHarness({
+    models: ['model-a'],
+    manager: { circuitFailureThreshold: 1, circuitCooldownMs: 40, circuitMaxCooldownMs: 100, maxAttempts: 1 },
+    provider: { behavior: () => ({ error: new ProviderError('server', 'unavailable', { status: 503 }) }) },
+  });
+  for (let i = 0; i < 4; i++) {
+    await manager.execute({}).catch(() => {});
+    await sleep(110);
+  }
+  const cooldowns = events.filter((e) => e.event === 'circuit.opened').map((e) => e.cooldownMs);
+  assert.deepEqual(cooldowns, [40, 80, 100, 100]);
 });
 
 test('a model that hangs (down without responding) is circuit-broken after timeouts', async () => {
@@ -264,16 +280,28 @@ test('a model that hangs (down without responding) is circuit-broken after timeo
 });
 
 test('half-open circuit allows only one concurrent trial request to a recovering model', async () => {
+  let othersBusy = false;
   const { manager, provider } = createHarness({
     manager: { attemptTimeoutMs: 60, circuitFailureThreshold: 1, circuitCooldownMs: 100 },
-    provider: { behavior: ({ model }) => (model === 'model-a' ? { hang: true } : undefined) },
+    provider: {
+      behavior: ({ model }) => {
+        if (model === 'model-a') return { hang: true };
+        if (othersBusy) return { error: new ProviderError('rate_limit', 'busy', { status: 429, retryAfterMs: 150 }) };
+        return undefined;
+      },
+    },
   });
   await manager.execute({}); // opens the circuit on model-a
   await sleep(120); // cooldown over -> half-open
-  const before = provider.calls.filter((c) => c.model === 'model-a').length;
+  const waveStart = Date.now();
+  othersBusy = true; // healthy models refuse, so the wave reaches the recovering model
+  setTimeout(() => { othersBusy = false; }, 30);
   const { errors } = await settleAll(Array.from({ length: 20 }, () => manager.execute({})));
   assert.equal(errors.length, 0);
-  assert.equal(provider.calls.filter((c) => c.model === 'model-a').length - before, 1);
+  // The trial times out at 60ms and re-opens the circuit for 200ms, so a second call to
+  // model-a inside this span could only be a concurrent trial. (A later sequential trial is fine.)
+  const trials = provider.calls.filter((c) => c.model === 'model-a' && c.at >= waveStart && c.at < waveStart + 200);
+  assert.equal(trials.length, 1);
 });
 
 test('client abort while queued removes the request without calling the provider', async () => {

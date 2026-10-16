@@ -1,8 +1,7 @@
 // Environment-driven configuration for the model manager.
 
+// gemini-2.5-flash and gemini-1.5-flash were removed: the API now returns 404 for them.
 export const DEFAULT_MODELS = [
-  'gemini-2.5-flash',
-  'gemini-1.5-flash',
   'gemini-3.5-flash-lite',
   'gemini-3.8-flash',
   'gemini-3.6-flash',
@@ -57,14 +56,15 @@ export function loadModelManagerConfig(env = process.env) {
     queueMaxSize: num(env, 'SCAN_QUEUE_MAX_SIZE', 50),
     queueTimeoutMs: num(env, 'SCAN_QUEUE_TIMEOUT_MS', 30_000),
     requestDeadlineMs: num(env, 'SCAN_REQUEST_DEADLINE_MS', 60_000),
-    attemptTimeoutMs: num(env, 'SCAN_ATTEMPT_TIMEOUT_MS', 25_000),
+    attemptTimeoutMs: num(env, 'SCAN_ATTEMPT_TIMEOUT_MS', 15_000),
     maxAttempts: Math.max(1, num(env, 'SCAN_MAX_ATTEMPTS', 4)),
     backoffBaseMs: num(env, 'SCAN_BACKOFF_BASE_MS', 500),
     backoffMaxMs: num(env, 'SCAN_BACKOFF_MAX_MS', 8_000),
     rateLimitCooldownMs: num(env, 'SCAN_RATE_LIMIT_COOLDOWN_MS', 60_000),
-    modelDisableMs: num(env, 'SCAN_MODEL_DISABLE_MS', 10 * 60_000),
+    modelDisableMs: num(env, 'SCAN_MODEL_DISABLE_MS', 24 * 3_600_000),
     circuitFailureThreshold: Math.max(1, num(env, 'SCAN_CIRCUIT_FAILURE_THRESHOLD', 3)),
     circuitCooldownMs: num(env, 'SCAN_CIRCUIT_COOLDOWN_MS', 60_000),
+    circuitMaxCooldownMs: num(env, 'SCAN_CIRCUIT_MAX_COOLDOWN_MS', 15 * 60_000),
     store: {
       type: storeType,
       redisUrl: env.REDIS_URL,

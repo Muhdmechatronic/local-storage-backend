@@ -49,15 +49,18 @@ export class ModelManager {
     this.queueMaxSize = opts.queueMaxSize ?? 50;
     this.queueTimeoutMs = opts.queueTimeoutMs ?? 30_000;
     this.requestDeadlineMs = opts.requestDeadlineMs ?? 60_000;
-    this.attemptTimeoutMs = opts.attemptTimeoutMs ?? 25_000;
+    this.attemptTimeoutMs = opts.attemptTimeoutMs ?? 15_000;
     this.maxAttempts = Math.max(1, opts.maxAttempts ?? 4);
     this.backoffBaseMs = opts.backoffBaseMs ?? 500;
     this.backoffMaxMs = opts.backoffMaxMs ?? 8_000;
     this.rateLimitCooldownMs = opts.rateLimitCooldownMs ?? 60_000;
-    this.modelDisableMs = opts.modelDisableMs ?? 10 * 60_000;
+    // A 404 means the model is retired or misspelled; it will not come back on its own.
+    this.modelDisableMs = opts.modelDisableMs ?? 24 * 3_600_000;
     // Circuit breaker for models that are down (repeated 5xx / timeouts / network errors).
+    // The cooldown doubles with every failed half-open trial, up to circuitMaxCooldownMs.
     this.circuitFailureThreshold = Math.max(1, opts.circuitFailureThreshold ?? 3);
     this.circuitCooldownMs = opts.circuitCooldownMs ?? 60_000;
+    this.circuitMaxCooldownMs = Math.max(this.circuitCooldownMs, opts.circuitMaxCooldownMs ?? 15 * 60_000);
     this.consecutiveFailures = new Map(); // model -> consecutive transient failures (in-process)
     this.halfOpenTrials = new Set(); // models with their single half-open trial request in flight
 
@@ -192,8 +195,12 @@ export class ModelManager {
             const failures = (this.consecutiveFailures.get(model) ?? 0) + 1;
             this.consecutiveFailures.set(model, failures);
             if (failures >= this.circuitFailureThreshold) {
-              this.log('warn', 'circuit.opened', { requestId, model, consecutiveFailures: failures, cooldownMs: this.circuitCooldownMs });
-              await this.#blockModel(model, this.now() + this.circuitCooldownMs, 'unhealthy', requestId);
+              const cooldownMs = Math.min(
+                this.circuitMaxCooldownMs,
+                this.circuitCooldownMs * 2 ** Math.min(20, failures - this.circuitFailureThreshold)
+              );
+              this.log('warn', 'circuit.opened', { requestId, model, consecutiveFailures: failures, cooldownMs });
+              await this.#blockModel(model, this.now() + cooldownMs, 'unhealthy', requestId);
               this.counters.failovers++;
             }
             if (attempt < this.maxAttempts) {
@@ -266,11 +273,16 @@ export class ModelManager {
     let waitUntil = Infinity;
     let resetAt = Infinity;
 
-    for (let i = 0; i < n; i++) {
-      const idx = (start + i) % n;
+    // Healthy models first (in rotation order), recovering ones last: a user request only lands
+    // on a model whose circuit was open when no healthy model can take it.
+    const isRecovering = (idx) => (this.consecutiveFailures.get(this.models[idx].name) ?? 0) >= this.circuitFailureThreshold;
+    const rotation = Array.from({ length: n }, (_, i) => (start + i) % n);
+    const order = [...rotation.filter((idx) => !isRecovering(idx)), ...rotation.filter(isRecovering)];
+
+    for (const idx of order) {
       const m = this.models[idx];
       // Half-open circuit: a model that failed repeatedly gets one trial request at a time.
-      const halfOpen = (this.consecutiveFailures.get(m.name) ?? 0) >= this.circuitFailureThreshold;
+      const halfOpen = isRecovering(idx);
       if (halfOpen && this.halfOpenTrials.has(m.name)) {
         waitUntil = Math.min(waitUntil, now + this.attemptTimeoutMs);
         continue;

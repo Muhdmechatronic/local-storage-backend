@@ -257,5 +257,5 @@ Write-Host " [Root Password]   : $pass" -ForegroundColor White
 Write-Host " [Default Bucket]  : $bucket (Public Download Active)" -ForegroundColor White
 Write-Host "========================================================" -ForegroundColor Green
 Write-Host " Services keep running after you close this window." -ForegroundColor Yellow
-Write-Host " Logs: logs-local.bat    Stop: stop.bat" -ForegroundColor Gray
+Write-Host " Logs: logs-local.bat (backend) / logs-all-local.bat (all)    Stop: stop.bat" -ForegroundColor Gray
 Write-Host "========================================================`n" -ForegroundColor Green
