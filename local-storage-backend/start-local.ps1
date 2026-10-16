@@ -223,9 +223,10 @@ if (-not (Wait-Url "http://127.0.0.1:3000/api/health" 30)) {
     Write-Host "[!] Backend did not answer yet. Check logs\backend.log (missing GEMINI/FIREBASE keys in .env?)" -ForegroundColor Red
 }
 
-$nginxConf   = (Join-Path $ScriptDir "nginx\nginx.local.conf") -replace '\\', '/'
-$nginxPrefix = ($NginxDir -replace '\\', '/') + "/"
-Start-LocalService "nginx" $NginxDir "nginx.exe -p `"$nginxPrefix`" -c `"$nginxConf`""
+# Relative paths only: nginx for Windows fails to open absolute paths that are
+# long or contain spaces / non-ASCII characters (e.g. Downloads, OneDrive).
+# The prefix is the working directory (tools\nginx-<ver>), so ../../ is the repo root.
+Start-LocalService "nginx" $NginxDir "nginx.exe -p ./ -c ../../nginx/nginx.local.conf"
 
 $tunnelUrl = "Disabled (set NGROK_AUTHTOKEN in .env)"
 if ($ngrokToken -and $ngrokToken -ne "your_ngrok_authtoken_here") {
